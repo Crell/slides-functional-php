@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>reveal.js - The HTML Presentation Framework</title>
+    <title>Functional PHP</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -58,9 +58,202 @@
         </section>
 
         <section>
-          <section>
-
+          <section data-background="assets/pocket-protector.jpg">
+            <div style="font-weight: bold; position: relative; top: -3em; text-shadow: 2px 2px 2px #000;">
+              <p>Warning, hard core geek action</p>
+              <p>Please pardon the nerd</p>
+            </div>
           </section>
+          <section data-background="assets/drupal-delorean.jpg">
+            <div style="font-weight: bold; position: relative; top: 10em; text-shadow: 2px 2px 2px #000;">
+              <p>But first a little history</p>
+            </div>
+          </section>
+          <section>
+            <!-- Needs proper layout -->
+            <h2>Von Neumann Architecture</h2>
+            <div style="width: 40%; float: right; border: 1px;">
+              <img src="assets/john-von-neumann.gif" data-credit="http://en.wikipedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif" />
+            </div>
+
+            <ul style="float: left;">
+              <li><a href="http://en.wikipedia.org/wiki/John_von_Neumann">John Von Neumann</a>, 1903-1957</li>
+              <li class="fragment">Mathematician, Physicist, all-around genius</li>
+              <li class="fragment">Set theory, Operator theory, quantum theory, nuclear physics...</li>
+              <li class="fragment">One of those ridiculously smart people who don't get enough credit for how much they change the world.</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Von Neumann Architecture</h2>
+            <img src="assets/Computer_system_bus.svg" alt="Computer system bus" data-credit="http://en.wikipedia.org/wiki/File:Computer_system_bus.svg" />
+            <p class="fragment">Programs are data, not hardware</p>
+          </section>
+          <section>
+            <h2>Von Neumann Architecture</h2>
+            <ul>
+              <li class="fragment">A program is just data: "Stored Program" concept</li>
+              <li class="fragment">A program is a series of steps</li>
+              <li class="fragment">Steps execute in linear sequence</li>
+              <li class="fragment">Steps alter memory registers</li>
+              <li class="fragment">Steps can alter the next step</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Imperative Programming</h2>
+            <ul>
+              <li class="fragment">Imperative "mood"</li>
+              <li class="fragment">Series of precise commands</li>
+              <li class="fragment">State: values that get changed over time by commands</li>
+              <li class="fragment">The purpose of commands is to alter state</li>
+            </ul>
+
+            <p class="fragment" style="margin-top: 2em;">This is what all modern hardware does</p>
+          </section>
+          <section>
+            <p>Imperative Programming is following a recipe for a cake</p>
+            <aside class="notes">
+              <ul>
+                <li>Constantly manipulating the same state</li>
+                <li>The state is computer memory</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Procedural Programming</h2>
+            <ul>
+              <li class="fragment">Imperative Programming: Evolved</li>
+              <li class="fragment">Procedure = subroutine = reusable series of commands</li>
+              <li class="fragment">Structured Programming: High-level abstractions
+                <ul>
+                  <li><code>if-then</code></li>
+                  <li><code>while</code></li>
+                  <li><code>for</code></li>
+                </ul>
+              </li>
+            </ul>
+            <pre class="fragment"><code>
+              Var MyList [5, 7, 2, 9, 2]
+              Var Biggest
+              Procedure FindBiggest
+                For MyList As Item
+                  If Item > Biggest Then
+                    Biggest = Item
+                  End If
+                End For
+                Return
+              End Procedure
+
+              Call FindBiggest
+              Print Biggest
+            </code></pre>
+          </section>
+          <section>
+            <div class="vcenter">
+              <p>Imperative Programming is following a recipe for a cake</p>
+              <p style="margin-top: 1em;">Procedural Programming is singing a song with a refrain</p>
+            </div>
+          </section>
+          <section class="slide">
+            <p>Imperative Programming defines <br /><em>how</em> a program should work.</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Declarative programming</h2>
+            <p class="fragment">Declarative Programming defines <br /><em>what</em> a program should accomplish.</p>
+            <aside class="notes">
+              <ul>
+                <li>SQL</li>
+                <li>CSS</li>
+                <li>DI config files</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>John Backus</h2>
+            <!-- Needs layout work. -->
+            <div style="width: 50%; float: right; border: 1px;">
+              <img style="max-width: 80%; max-height: 80%;" src="assets/john-backus.jpg" data-credit="http://en.wikipedia.org/wiki/File:John_Backus.jpg" />
+            </div>
+            <ul>
+              <li><a href="http://en.wikipedia.org/wiki/John_Backus">John Backus</a>, 1924-2007</li>
+              <li class="fragment">Invented FORTRAN, 1953</li>
+              <li class="fragment">As penance...
+                <ul>
+                  <li class="fragment">Developed Backus-Naur Form (BNF)</li>
+                  <li class="fragment">Co-developed Algol</li>
+                  <li class="fragment">Function-level Programming (FP), 1977</li>
+                </ul>
+              </li>
+            </ul>
+            <p style="clear: both; margin-top: 2em;" class="fragment">"Can Programming Be Liberated From the von Neumann Style? A Functional Style and its Algebra of Programs"</p>
+            <aside class="notes">
+              Functional like math, not functional like "working".
+              Bakus didn't invent it.
+              LISP claims to, like everything else.
+            </aside>
+          </section>
+          <section>
+            <h2>Functional programming</h2>
+            <p>Declare your algorithm</p>
+            <p class="fragment">The compiler optimizes for you</p>
+          </section>
+          <section>
+            <h2>Functional programming</h2>
+            <ul>
+              <li class="fragment">Pure functions</li>
+              <li class="fragment">Higher-order functions / First-class functions</li>
+              <li class="fragment">Immutable variables</li>
+            </ul>
+          </section>
+          <section>
+            <p>So what?</p>
+            <img style="width: 80%" src="assets/this-is-sparta.jpg" alt="This is PHP!" data-source="http://socialnewsdaily.com/13755/this-is-chitown-nate-robinson-compares-bulls-to-300-on-twitter/" />
+            <h2 style="font-weight: bold; position: relative; top: -1.5em; text-shadow: 2px 2px 2px #000;">This is PHP!</h2>
+          </section>
+          <section>
+            <p>Functional languages enforce what is<br />simply "good code" in other languages</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Pure functions</h2>
+          </section>
+          <section>
+            
+          </section>
+        </section>
+        <section>
+          Outline:
+
+          Procedural code: Define
+          FP code: Define
+          Principles of FP:
+          - Pure functions (Idempotency)
+          - Higher-order functions
+          - Immutable variables
+          So what?  PHP isn't functional or concurrent.
+          => Principles are *the same* as "good code" principles
+
+          FP applied to OOP:
+          - Pure functions: stateless services
+          - Higher-order functions: Super-useful shorthand for objects
+          -- Pimple
+          -- Import mapper
+          -- array_map() et al
+          - Immutable variables: Avoids state questions. Value objects
+          - Currying: Worker factories (build objects that do things, based on pre-set values)
+          - Memoization: FP does it automatically, you do it yourself; Purity makes it easier
+          - Algorithm-first:
+          -- API defines WHAT should happen. Build that first.
+          -- Test it.
+          -- Worry about HOW later.
+
+
+
+
         </section>
 
       </div>
