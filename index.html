@@ -168,6 +168,7 @@
                 <li>SQL</li>
                 <li>CSS</li>
                 <li>DI config files</li>
+                <li>Spreadsheets</li>
               </ul>
             </aside>
           </section>
@@ -220,10 +221,170 @@
         <section>
           <section>
             <h2>Pure functions</h2>
+            <ul>
+              <li class="fragment">No side-effects (including I/O)</li>
+              <li class="fragment">Explicit function input/output</li>
+              <li class="fragment">Stateless</li>
+              <li class="fragment">Takes clear input, gives clear output: <em>that's it</em></li>
+            </ul>
           </section>
           <section>
-            
+            <pre><code class="php">
+function theme_list(array $items, $type = 'ul') {
+  $output = '';
+  foreach ($items as $item) {
+    $output .= '<li>' . $item . '</li>';
+  }
+  return "<{$type}>" . $output . '<' . '/' . $type . '>';
+}
+            </code></pre>
           </section>
+          <section>
+            <h2>Pure functions</h2>
+            <ul>
+              <li class="fragment">Easy testability</li>
+              <li class="fragment">Not SAD (Spooky Action at a Distance)</li>
+              <li class="fragment">Self-contained</li>
+              <li class="fragment">Idempotent</li>
+            </ul>
+            <p style="margin-top: 1em;" class="fragment">Where have we seen this before...?</p>
+          </section>
+          <section>
+            <h2>Service objects</h2>
+            <ul>
+              <li class="fragment">Stateless</li>
+              <li class="fragment">Single-purpose</li>
+              <li class="fragment">Idempotent (usually)</li>
+              <li class="fragment">No non-I/O side-effects</li>
+            </ul>
+            <p style="margin-top: 1em;" class="fragment">Good service objects are pure functions</p>
+          </section>
+        </section>
+        <section>
+          <section class="slide">
+            <h2>First-class functions</h2>
+            <ul>
+              <li class="fragment">Functions can be a variable</li>
+              <li class="fragment">Functions can be a parameter</li>
+              <li class="fragment">Functions can be a return type</li>
+            </ul>
+            <pre class="fragment"><code class="php">
+  $function = function($value) {
+    return $value * 5;
+  };
+  $function($a);
+            </code></pre>
+          </section>
+
+          <section class="slide">
+            <h2>First-class functions</h2>
+            <ul>
+              <li class="fragment">Strategy pattern</li>
+              <li class="fragment">Lazy-evaluation</li>
+              <li class="fragment">Partial evaluation / Currying</li>
+            </ul>
+            <p style="margin-top: 1em;" class="fragment">Or just a really cool shorthand for objects</p>
+          </section>
+          <section>
+            <h2>Anonymous functions</h2>
+            <pre><code class="php">$find_pair = function ($card1, $card2) {
+  return ($card1->value == $card2->value);
+};
+
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+
+            <div class="fragment">
+              <div>==</div>
+              <pre><code class="php">class FindPair {
+  public function __invoke($card1, $card2) {
+    return ($card1->value == $card2->value);
+  }
+}
+
+$find_pair = new FindPair();
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Closures</h2>
+            <pre><code class="php">$wild = new Card('5H');
+$find_pair = function ($card1, $card2) use ($wild) {
+  return ($card1->value == $card2->value
+    || $wild->value == $card1->value && $wild->suit == $card1->suit
+    || $wild->value == $card2->value && $wild->suit == $card2->suit);
+};
+
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+
+            <div class="fragment">
+              <div>==</div>
+              <pre><code class="php">$wild = new Card('5H');
+class FindPair {
+  protected $wild;
+  public function __construct($wild) {
+    $this->wild = $wild;
+  }
+  public function __invoke($card1, $card2) {
+    return ($card1->value == $card2->value
+      || $this->wild->value == $card1->value && $this->wild->suit == $card1->suit
+      || $this->wild->value == $card2->value && $this->wild->suit == $card2->suit);
+  }
+}
+$find_pair = new FindPair($wild);
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Layering functions</h2>
+            <pre><code class="php">$wild = new Card('5H');
+
+$is_wild = function($card) use ($wild) {
+  return $wild->value == $card->value && $wild->suit == $card->suit;
+}
+
+$find_pair = function ($card1, $card2) use ($is_wild) {
+  return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
+};
+
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+            <aside class="notes">
+              This looks an awful lot like Dependency Injection to me...
+            </aside>
+          </section>
+
+          <section class="slide">
+            <h2>Delayed execution</h2>
+            <pre><code class="php">class Container {
+  protected $factories = array();
+
+  public function __set($key, $func) {
+    $this->factories[$key] = $func;
+  }
+
+  public function __get($key) {
+    return $this->factories[$key]($this);
+  }
+}</code></pre>
+
+            <div class="fragment">
+              <pre><code class="php">$container = new Container();
+$container->conn = function($c) {
+  return new DatabaseConnection($c->info);
+};
+$container->info = function() { return ['user'=>'me', 'pass'=>'hi']; };
+
+$conn = $container->conn;
+$conn->query('...');</code></pre>
+            </div>
+
+            <p class="fragment">Hey, look, a Dependency Injection Container!</p>
+
+            <div style="text-align: center; margin-top: 1em;" class="fragment">See also: <a href="http://pimple.sensiolabs.org/">Pimple</a></div>
+          </section>
+
+
         </section>
         <section>
           Outline:
