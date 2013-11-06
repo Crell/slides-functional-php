@@ -425,7 +425,7 @@ $my_object = $importer->mapData($fancy_external_data_object);
         </section>
         <section>
           <section>
-            <h2>Functional tools</h2>
+            <h2>The Functional Way</h2>
           </section>
           <section>
             <h2>Map/Reduce</h2>
@@ -493,9 +493,34 @@ $importer = new Importer(new MyMapper());
 
 $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
 </code></pre>
-
           </section>
-
+        </section>
+        <section>
+          <section>
+            <h2>Immutable variables</h2>
+            <ul>
+              <li class="fragment">Once set, may not be changed</li>
+              <li class="fragment">Allows for memory optimization</li>
+              <li class="fragment">Reduces SAD</li>
+              <li class="fragment">State is where bugs come from</li>
+              <li class="fragment">Forces small functions</li>
+            </ul>
+            <aside class="notes">
+              <ul>
+                <li>Be an enemy of the state</li>
+                <li>Stepping through a debugger looking to see where that var changed...</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Value Objects</h2>
+            <ul>
+              <li class="fragment">Easier testing</li>
+              <li class="fragment">Less SAD</li>
+              <li class="fragment">Often easier to read</li>
+              <li class="fragment">Reuse an object safely</li>
+            </ul>
+          </section>
         </section>
         <section>
           Outline:
