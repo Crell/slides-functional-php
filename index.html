@@ -229,6 +229,7 @@
             </ul>
           </section>
           <section>
+            <h2>Pure functions</h2>
             <pre><code class="php">
 function theme_list(array $items, $type = 'ul') {
   $output = '';
@@ -383,7 +384,117 @@ $conn->query('...');</code></pre>
 
             <div style="text-align: center; margin-top: 1em;" class="fragment">See also: <a href="http://pimple.sensiolabs.org/">Pimple</a></div>
           </section>
+          <section>
+            <h2>Importing</h2>
+              <pre class="fragment"><code class="php">abstract class Importer {
+  public function __construct(MapInterface $map) { $this->map = $map; }
+  public function mapData($source) {
+    $dest = $this->repository->create('someType');
+    foreach ($this->map->mapping() as $field => $callback) {
+      $dest->$field = $callback($source);
+    }
+    return $dest;
+  }
+}
+</code></pre><pre class="fragment"><code class="php">class MyMapper implements MapInterface {
+  public function mapping() {
+    $proc = $this->someUtilityService;
+    $map['title'] = function($source) use ($proc) {
+      return strip_tags($proc->extract('label', $source));
+    };
+    $map['body'] = function($source) use ($proc) {
+      return $proc->extract('body', $source);
+    };
+    $map['extra'] = function($source) {
+      return "Some hard coded value";
+    };
+    return $map;
+  }
+}
+</code></pre><pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
+$my_object = $importer->mapData($fancy_external_data_object);
+</code></pre>
+            <aside class="notes">
+              <ul>
+                <li>An import engine that fits on one slide.</li>
+                <li>Both classes are immutable: Idempotent; REUSE!</li>
+                <li>Doing this on CLI? ... Could you fork?</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Functional tools</h2>
+          </section>
+          <section>
+            <h2>Map/Reduce</h2>
+            <ul>
+              <li class="fragment">"Embarrassingly Parallel" Problems</li>
+              <li class="fragment">Map
+                <ol>
+                  <li>Divide a problem into (identical) sub-problems</li>
+                  <li>Distribute to separate workers</li>
+                </ol>
+              </li>
+              <li class="fragment">Reduce
+                <ol>
+                  <li>Collect answers</li>
+                  <li>Combine back together</li>
+                </ol>
+              </li>
+              <li class="fragment">Really useful for epically huge data sets</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Map/Reduce</h2>
+            <ul>
+              <li class="fragment">Could get very complicated, or...</li>
 
+              <li class="fragment" style="list-style-type: none;">
+                <pre class="fragment"><code class="php">$result = array_map($callback, $array);
+
+$result = array_map(function($a) {
+  // Your logic here.
+}, $array);
+
+$result = array_map(function($a, $b) {
+  // Your logic here.
+}, $array1, $array2);
+                </code></pre>
+              </li>
+              <li class="fragment"><code>foreach()</code>, but separates application from loop</li>
+              <li class="fragment">Slightly slower, but not enough to care</li>
+            </ul>
+            <aside class="notes">
+              <ul>
+                <li>First: any callable</li>
+                <li>Second: Inline makes one-off functions unnecessary.</li>
+                <li>Third: combine arrays, produce one result.</li>
+                <li>array_map() doesn't work on iterables :-(</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Declarative PHP</h2>
+<pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
+foreach ($array_of_external_objects as $object) {
+  $my_objects[] = $importer->mapData($object);
+}
+</code></pre><pre class="fragment"><code class="php">$apply = function($callback, Iterator $i) {
+  $ret = [];
+  foreach ($i as $object) {
+    $ret[] = $callback($object);
+  }
+  return $ret;
+}
+
+$importer = new Importer(new MyMapper());
+
+$my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
+</code></pre>
+
+          </section>
 
         </section>
         <section>
