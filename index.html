@@ -523,13 +523,161 @@ $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
           </section>
         </section>
         <section>
+          <section data-background="assets/curry-food.jpg" data-credit="http://www.flickr.com/photos/hermitsmoores/4617145189">
+            <h1>Currying</h1>
+          </section>
+          <section>
+            <h2>Haskell Curry</h2>
+            <h3>1900-1982</h3>
+            <img src="assets/haskell-curry.jpg" data-credit="http://en.wikipedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif" />
+            <p><a href="http://en.wikipedia.org/wiki/Haskell_Curry">Yet another</a> crazy smart mathematician</p>
+          </section>
           <section>
             <h2>Currying</h2>
+            <p>Splitting a <a href="http://en.wikipedia.org/wiki/Currying">multi-parameter function</a><br />into multiple single-parameter functions</p>
+            <p style="margin-top: 2em;">A special case of partial-application</p>
+          </section>
+          <section>
+            <h2>Partial-application</h2>
+            <pre><code class="php">$add = function ($a, $b) {
+  return $a + $b;
+};</code></pre>
+            <pre class="fragment"><code class="php">$add = function ($a) {
+  return function($b) use ($a) {
+    return $a + $b;
+  };
+};
+
+$add1 = $add(1);
+$add5 = $add(5);
+
+$x = $add5($y);</code></pre>
+
+            <pre class="fragment"><code class="php">$add = function ($a) {
+  return function($b) use ($a) {
+    return $a + $b;
+  };
+};
+
+$adder = $add(get_config_value('increment_amount'));
+$x = $adder($y);
+$values = array_map($adder, $array);</code></pre>
           </section>
         </section>
         <section>
           <section>
             <h2>Memoization</h2>
+            <ul>
+              <li class="fragment">Fancy name for result caching</li>
+              <li class="fragment">Pure functions are pure: Same I, same O</li>
+              <li class="fragment">You've probably done this before...</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Memoization</h2>
+            <pre><code class="php">function expensive($key) {
+  static $keys = array();
+
+  if (empty($keys[$key])) {
+    $keys[$key] = /* some expensive operation */
+  }
+
+  return $keys[$key];
+}</code></pre>
+            <aside class="notes">
+              <ul>
+                <li>Simple and easy</li>
+                <li>Caching is not part of the business logic</li>
+                <li>Can't clear cache (for testing)</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Memoization</h2>
+            <pre><code class="php">$factorial = function($a) use (&$factorial)  {
+  print "Called function with $a" . PHP_EOL;
+  if ($a == 1) {
+    return 1;
+  }
+  return $a * $factorial($a - 1);
+};
+
+print "Result: " . $factorial(3) . PHP_EOL;
+print "Result: " . $factorial(4) . PHP_EOL;</code></pre>
+            <pre class="fragment">Called function with 3
+Called function with 2
+Called function with 1
+Result: 6
+Called function with 4
+Called function with 3
+Called function with 2
+Called function with 1
+Result: 24</pre>
+          </section>
+          <section>
+            <h2>Memoization</h2>
+            <pre><code class="php">function memoize($function) {
+  return function() use ($function) {
+    static $results = array();
+    $args = func_get_args();
+    $key = serialize($args);
+    if (empty($results[$key])) {
+      $results[$key] = call_user_func_array($function, $args);
+    }
+    return $results[$key];
+  };
+}
+
+$factorial = memoize($factorial);
+
+print "Result: " . $factorial(3) . PHP_EOL;
+print "Result: " . $factorial(4) . PHP_EOL;</code></pre>
+            <pre class="fragment">Called function with 3
+Called function with 2
+Called function with 1
+Result: 6
+Called function with 4
+Result: 24</pre>
+          </section>
+          <section>
+            <h2>What about objects?</h2>
+            <pre><code class="php">interface FancyInterface {
+  public function compute($key);
+}
+class Fancy implements FancyInterface {
+  public function compute($key) { }
+}</code></pre>
+            <pre class="fragment"><code class="php">class FancyCache implements FancyInterface {
+  public function __construct(FancyInterface $wrapped) {
+    $this->wrapped = $wrapped;
+  }
+  public function compute($key) {
+    if !($this->cache[$key]) {
+      $this->cache[$key] = $this->wrapped->compute($key);
+    }
+    return $this->cache[$key];
+  }
+}</code></pre>
+            <pre class="fragment"><code class="php">$fancy = new FancyCache(new Fancy());
+$fancy->compute();
+$fancy->compute();
+</code></pre>
+          </section>
+          <section>
+            <h2>Memoize any callable</h2>
+            <pre><code class="php">interface FancyInterface {
+  public function compute($key);
+}
+class Fancy implements FancyInterface {
+  public function compute($key) { }
+}</code></pre>
+            <pre class="fragment"><code class="php">$f = new Fancy();
+$callable = [$f, 'compute'];
+$f_cached = memoize($callable);
+
+// And it really really works.
+$f_cached($key);
+</code></pre>
           </section>
         </section>
         <section>
@@ -554,10 +702,11 @@ $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
             <p class="fragment">It's just good code</p>
           </section>
         </section>
-        <section>
-
+s        <section>
+          <h2>Rate this session!</h2>
+          <p><a href="https://joind.in/talk/view/9993">https://joind.in/talk/view/9993</a></p>
         </section>
-        <section>
+       <section>
           Outline:
 
           Procedural code: Define
