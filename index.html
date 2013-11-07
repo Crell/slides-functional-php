@@ -202,6 +202,11 @@ Print Biggest</code></pre>
             </ul>
           </section>
           <section>
+            <p>Imperative Programming is following a recipe for a cake</p>
+            <p style="margin-top: 1em;">Procedural Programming is singing a song with a refrain</p>
+            <p style="margin-top: 1em;">Functional Programming is expressions in a spreadsheet</p>
+          </section>
+          <section>
             <p>So what?</p>
             <img style="width: 80%" src="assets/this-is-sparta.jpg" alt="This is PHP!" data-source="http://socialnewsdaily.com/13755/this-is-chitown-nate-robinson-compares-bulls-to-300-on-twitter/" />
             <h2 style="font-weight: bold; position: relative; top: -1.5em; text-shadow: 2px 2px 2px #000;">This is PHP!</h2>
@@ -238,6 +243,7 @@ function theme_list(array $items, $type = 'ul') {
               <li class="fragment">Easy testability</li>
               <li class="fragment">Not SAD (Spooky Action at a Distance)</li>
               <li class="fragment">Self-contained</li>
+              <li class="fragment">No I/O</li>
               <li class="fragment">Idempotent</li>
             </ul>
             <p style="margin-top: 1em;" class="fragment">Where have we seen this before...?</p>
@@ -658,13 +664,7 @@ $add5 = $add(5);
 
 $x = $add5($y);</code></pre>
 
-            <pre class="fragment"><code class="php">$add = function ($a) {
-  return function($b) use ($a) {
-    return $a + $b;
-  };
-};
-
-$adder = $add(get_config_value('increment_amount'));
+            <pre class="fragment"><code class="php">$adder = $add(get_config_value('increment_amount'));
 $x = $adder($y);
 $values = array_map($adder, $array);</code></pre>
           </section>
