@@ -56,7 +56,6 @@
             <small>Presented by <a href="http://www.garfieldtech.com/">Larry Garfield</a> (<a href="http://twitter.com/Crell">@Crell</a>)</small>
           </p>
         </section>
-
         <section>
           <section data-background="assets/pocket-protector.jpg">
             <div style="font-weight: bold; position: relative; top: -3em; text-shadow: 2px 2px 2px #000;">
@@ -86,7 +85,6 @@
           <section>
             <h2>Von Neumann Architecture</h2>
             <img src="assets/Computer_system_bus.svg" alt="Computer system bus" data-credit="http://en.wikipedia.org/wiki/File:Computer_system_bus.svg" />
-            <p class="fragment">Programs are data, not hardware</p>
           </section>
           <section>
             <h2>Von Neumann Architecture</h2>
@@ -133,27 +131,23 @@
                 </ul>
               </li>
             </ul>
-            <pre class="fragment"><code>
-              Var MyList [5, 7, 2, 9, 2]
-              Var Biggest
-              Procedure FindBiggest
-                For MyList As Item
-                  If Item > Biggest Then
-                    Biggest = Item
-                  End If
-                End For
-                Return
-              End Procedure
+            <pre class="fragment"><code>Var MyList [5, 7, 2, 9, 2]
+Var Biggest
+Procedure FindBiggest
+  For MyList As Item
+    If Item > Biggest Then
+      Biggest = Item
+    End If
+  End For
+  Return
+End Procedure
 
-              Call FindBiggest
-              Print Biggest
-            </code></pre>
+Call FindBiggest
+Print Biggest</code></pre>
           </section>
           <section>
-            <div class="vcenter">
-              <p>Imperative Programming is following a recipe for a cake</p>
-              <p style="margin-top: 1em;">Procedural Programming is singing a song with a refrain</p>
-            </div>
+            <p>Imperative Programming is following a recipe for a cake</p>
+            <p style="margin-top: 1em;">Procedural Programming is singing a song with a refrain</p>
           </section>
           <section class="slide">
             <p>Imperative Programming defines <br /><em>how</em> a program should work.</p>
@@ -259,6 +253,9 @@ function theme_list(array $items, $type = 'ul') {
               <li class="fragment">No non-I/O side-effects</li>
             </ul>
             <p style="margin-top: 1em;" class="fragment">Good service objects are pure functions</p>
+            <aside class="notes">
+              "Iceberg classes": Only one public method == function!
+            </aside>
           </section>
         </section>
         <section>
@@ -269,14 +266,11 @@ function theme_list(array $items, $type = 'ul') {
               <li class="fragment">Functions can be a parameter</li>
               <li class="fragment">Functions can be a return type</li>
             </ul>
-            <pre class="fragment"><code class="php">
-  $function = function($value) {
-    return $value * 5;
-  };
-  $function($a);
-            </code></pre>
+            <pre class="fragment"><code class="php">$function = function($value) {
+  return $value * 5;
+};
+$function($a);</code></pre>
           </section>
-
           <section class="slide">
             <h2>First-class functions</h2>
             <ul>
@@ -336,7 +330,6 @@ $find_pair = new FindPair($wild);
 $is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
             </div>
           </section>
-
           <section>
             <h2>Layering functions</h2>
             <pre><code class="php">$wild = new Card('5H');
@@ -355,7 +348,7 @@ $is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
             </aside>
           </section>
 
-          <section class="slide">
+          <section>
             <h2>Delayed execution</h2>
             <pre><code class="php">class Container {
   protected $factories = array();
@@ -381,7 +374,6 @@ $conn->query('...');</code></pre>
             </div>
 
             <p class="fragment">Hey, look, a Dependency Injection Container!</p>
-
             <div style="text-align: center; margin-top: 1em;" class="fragment">See also: <a href="http://pimple.sensiolabs.org/">Pimple</a></div>
           </section>
           <section>
@@ -402,16 +394,12 @@ $conn->query('...');</code></pre>
     $map['title'] = function($source) use ($proc) {
       return strip_tags($proc->extract('label', $source));
     };
-    $map['body'] = function($source) use ($proc) {
-      return $proc->extract('body', $source);
-    };
-    $map['extra'] = function($source) {
-      return "Some hard coded value";
-    };
+    $map['body'] = function($source) { return $source->body; };
+    $map['extra'] = function($source) { return "Some hard coded value"; };
     return $map;
   }
-}
-</code></pre><pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
+}</code></pre>
+            <pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
 $my_object = $importer->mapData($fancy_external_data_object);
 </code></pre>
             <aside class="notes">
@@ -493,6 +481,9 @@ $importer = new Importer(new MyMapper());
 
 $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
 </code></pre>
+            <aside class="notes">
+              What about pipelining the saving? (Left as an exercise for the reader)
+            </aside>
           </section>
         </section>
         <section>
@@ -562,6 +553,39 @@ $x = $add5($y);</code></pre>
 $adder = $add(get_config_value('increment_amount'));
 $x = $adder($y);
 $values = array_map($adder, $array);</code></pre>
+          </section>
+          <section>
+            <h2>Practical Partials</h2>
+            <pre><code class="php">function partial($func, $arg1) {
+  $args = func_get_args();
+  $func = array_shift($args);
+
+  return function() use($func, $args) {
+      $full_args = array_merge($args, func_get_args());
+      return call_user_func_array($func, $full_args);
+  };
+}
+$date_formatter = partial('date', 'Y-m-d h:i:s');
+print $date_formatter(1372636800);
+</code></pre>
+            <pre class="fragment">
+2013-07-01 00:00:00
+</pre>
+            <pre class="fragment"><code class="php">$dates = [1372636800, 1372896000, 1383004800,1384009200];
+
+print implode(PHP_EOL, array_map($date_formatter, $dates)) . PHP_EOL;</code></pre>
+            <pre class="fragment">
+2013-07-01 00:00:00
+2013-07-04 00:00:00
+2013-10-29 00:00:00
+2013-11-09 15:00:00
+</pre>
+            <aside class="notes">
+              <ul>
+                <li>First timestamp is Canada Day this year</li>
+                <li>Second output: Canada Day, US Indy, My birthday, This talk!</li>
+              </ul>
+            </aside>
           </section>
         </section>
         <section>
@@ -684,6 +708,12 @@ $f_cached($key);
           <section>
             <h2>Algorithm-first design</h2>
             <p class="fragment">Purity is awesome</p>
+            <aside class="notes">
+              <ul>
+                <li>Purity is awesome</li>
+                <li>Anonymous functions are awesome</li>
+              </ul>
+            </aside>
           </section>
           <section>
             <p>Think in terms of <strong><em>what</em></strong>, not <strong><em>how</em></strong></p>
@@ -698,47 +728,20 @@ $f_cached($key);
             <p class="fragment">(You should be doing that anyway)</p>
           </section>
           <section>
+            <p>State is where bugs come from</p>
+            <p class="fragment">(Does that make me an enemy of the state?)</p>
+          </section>
+          <section>
             <p>Functional programming isn't a language</p>
             <p class="fragment">It's just good code</p>
           </section>
         </section>
-s        <section>
+        <section>
           <h2>Rate this session!</h2>
           <p><a href="https://joind.in/talk/view/9993">https://joind.in/talk/view/9993</a></p>
+          <p>Yell at me on Twitter: <a href="http://twitter.com/Crell">@Crell</a></p>
         </section>
-       <section>
-          Outline:
-
-          Procedural code: Define
-          FP code: Define
-          Principles of FP:
-          - Pure functions (Idempotency)
-          - Higher-order functions
-          - Immutable variables
-          So what?  PHP isn't functional or concurrent.
-          => Principles are *the same* as "good code" principles
-
-          FP applied to OOP:
-          - Pure functions: stateless services
-          - Higher-order functions: Super-useful shorthand for objects
-          -- Pimple
-          -- Import mapper
-          -- array_map() et al
-          - Immutable variables: Avoids state questions. Value objects
-          - Currying: Worker factories (build objects that do things, based on pre-set values)
-          - Memoization: FP does it automatically, you do it yourself; Purity makes it easier
-          - Algorithm-first:
-          -- API defines WHAT should happen. Build that first.
-          -- Test it.
-          -- Worry about HOW later.
-
-
-
-
-        </section>
-
       </div>
-
     </div>
 
     <script src="lib/js/head.min.js"></script>
