@@ -69,18 +69,17 @@
             </div>
           </section>
           <section>
-            <!-- Needs proper layout -->
             <h2>Von Neumann Architecture</h2>
-            <div style="width: 40%; float: right; border: 1px;">
+            <div style="width: 48%; float: right; border: 1px;">
               <img src="assets/john-von-neumann.gif" data-credit="http://en.wikipedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif" />
             </div>
-
-            <ul style="float: left;">
+            <ul style="width: 48%; float: left;">
               <li><a href="http://en.wikipedia.org/wiki/John_von_Neumann">John Von Neumann</a>, 1903-1957</li>
               <li class="fragment">Mathematician, Physicist, all-around genius</li>
               <li class="fragment">Set theory, Operator theory, quantum theory, nuclear physics...</li>
               <li class="fragment">One of those ridiculously smart people who don't get enough credit for how much they change the world.</li>
             </ul>
+            <br style="clear: both" />
           </section>
           <section>
             <h2>Von Neumann Architecture</h2>
@@ -167,12 +166,11 @@ Print Biggest</code></pre>
             </aside>
           </section>
           <section>
-            <h2>John Backus</h2>
-            <!-- Needs layout work. -->
+            <h2>Functional Programming</h2>
             <div style="width: 50%; float: right; border: 1px;">
               <img style="max-width: 80%; max-height: 80%;" src="assets/john-backus.jpg" data-credit="http://en.wikipedia.org/wiki/File:John_Backus.jpg" />
             </div>
-            <ul>
+            <ul style="width: 46%; float: left;">
               <li><a href="http://en.wikipedia.org/wiki/John_Backus">John Backus</a>, 1924-2007</li>
               <li class="fragment">Invented FORTRAN, 1953</li>
               <li class="fragment">As penance...
@@ -514,81 +512,6 @@ $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
           </section>
         </section>
         <section>
-          <section data-background="assets/curry-food.jpg" data-credit="http://www.flickr.com/photos/hermitsmoores/4617145189">
-            <h1>Currying</h1>
-          </section>
-          <section>
-            <h2>Haskell Curry</h2>
-            <h3>1900-1982</h3>
-            <img src="assets/haskell-curry.jpg" data-credit="http://en.wikipedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif" />
-            <p><a href="http://en.wikipedia.org/wiki/Haskell_Curry">Yet another</a> crazy smart mathematician</p>
-          </section>
-          <section>
-            <h2>Currying</h2>
-            <p>Splitting a <a href="http://en.wikipedia.org/wiki/Currying">multi-parameter function</a><br />into multiple single-parameter functions</p>
-            <p style="margin-top: 2em;">A special case of partial-application</p>
-          </section>
-          <section>
-            <h2>Partial-application</h2>
-            <pre><code class="php">$add = function ($a, $b) {
-  return $a + $b;
-};</code></pre>
-            <pre class="fragment"><code class="php">$add = function ($a) {
-  return function($b) use ($a) {
-    return $a + $b;
-  };
-};
-
-$add1 = $add(1);
-$add5 = $add(5);
-
-$x = $add5($y);</code></pre>
-
-            <pre class="fragment"><code class="php">$add = function ($a) {
-  return function($b) use ($a) {
-    return $a + $b;
-  };
-};
-
-$adder = $add(get_config_value('increment_amount'));
-$x = $adder($y);
-$values = array_map($adder, $array);</code></pre>
-          </section>
-          <section>
-            <h2>Practical Partials</h2>
-            <pre><code class="php">function partial($func, $arg1) {
-  $args = func_get_args();
-  $func = array_shift($args);
-
-  return function() use($func, $args) {
-      $full_args = array_merge($args, func_get_args());
-      return call_user_func_array($func, $full_args);
-  };
-}
-$date_formatter = partial('date', 'Y-m-d h:i:s');
-print $date_formatter(1372636800);
-</code></pre>
-            <pre class="fragment">
-2013-07-01 00:00:00
-</pre>
-            <pre class="fragment"><code class="php">$dates = [1372636800, 1372896000, 1383004800,1384009200];
-
-print implode(PHP_EOL, array_map($date_formatter, $dates)) . PHP_EOL;</code></pre>
-            <pre class="fragment">
-2013-07-01 00:00:00
-2013-07-04 00:00:00
-2013-10-29 00:00:00
-2013-11-09 15:00:00
-</pre>
-            <aside class="notes">
-              <ul>
-                <li>First timestamp is Canada Day this year</li>
-                <li>Second output: Canada Day, US Indy, My birthday, This talk!</li>
-              </ul>
-            </aside>
-          </section>
-        </section>
-        <section>
           <section>
             <h2>Memoization</h2>
             <ul>
@@ -702,6 +625,81 @@ $f_cached = memoize($callable);
 // And it really really works.
 $f_cached($key);
 </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-background="assets/curry-food.jpg" data-credit="http://www.flickr.com/photos/hermitsmoores/4617145189">
+            <h1>Currying</h1>
+          </section>
+          <section>
+            <h2>Haskell Curry</h2>
+            <h3>1900-1982</h3>
+            <img src="assets/haskell-curry.jpg" data-credit="http://en.wikipedia.org/wiki/File:JohnvonNeumann-LosAlamos.gif" />
+            <p><a href="http://en.wikipedia.org/wiki/Haskell_Curry">Yet another</a> crazy smart mathematician</p>
+          </section>
+          <section>
+            <h2>Currying</h2>
+            <p>Splitting a <a href="http://en.wikipedia.org/wiki/Currying">multi-parameter function</a><br />into multiple single-parameter functions</p>
+            <p style="margin-top: 2em;">A special case of partial-application</p>
+          </section>
+          <section>
+            <h2>Partial-application</h2>
+            <pre><code class="php">$add = function ($a, $b) {
+  return $a + $b;
+};</code></pre>
+            <pre class="fragment"><code class="php">$add = function ($a) {
+  return function($b) use ($a) {
+    return $a + $b;
+  };
+};
+
+$add1 = $add(1);
+$add5 = $add(5);
+
+$x = $add5($y);</code></pre>
+
+            <pre class="fragment"><code class="php">$add = function ($a) {
+  return function($b) use ($a) {
+    return $a + $b;
+  };
+};
+
+$adder = $add(get_config_value('increment_amount'));
+$x = $adder($y);
+$values = array_map($adder, $array);</code></pre>
+          </section>
+          <section>
+            <h2>Practical Partials</h2>
+            <pre><code class="php">function partial($func, $arg1) {
+  $args = func_get_args();
+  $func = array_shift($args);
+
+  return function() use($func, $args) {
+      $full_args = array_merge($args, func_get_args());
+      return call_user_func_array($func, $full_args);
+  };
+}
+$date_formatter = partial('date', 'Y-m-d h:i:s');
+print $date_formatter(1372636800);
+</code></pre>
+            <pre class="fragment">
+2013-07-01 00:00:00
+</pre>
+            <pre class="fragment"><code class="php">$dates = [1372636800, 1372896000, 1383004800,1384009200];
+
+print implode(PHP_EOL, array_map($date_formatter, $dates)) . PHP_EOL;</code></pre>
+            <pre class="fragment">
+2013-07-01 00:00:00
+2013-07-04 00:00:00
+2013-10-29 00:00:00
+2013-11-09 15:00:00
+</pre>
+            <aside class="notes">
+              <ul>
+                <li>First timestamp is Canada Day this year</li>
+                <li>Second output: Canada Day, US Indy, My birthday, This talk!</li>
+              </ul>
+            </aside>
           </section>
         </section>
         <section>
