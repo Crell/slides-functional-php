@@ -670,7 +670,7 @@ $values = array_map($adder, $array);</code></pre>
           </section>
           <section>
             <h2>Practical Partials</h2>
-            <pre><code class="php">function partial($func, $arg1) {
+            <pre data-credit="http://allthingsphp.blogspot.com/2012/02/currying-vs-partial-application.html"><code class="php">function partial($func, $arg1) {
   $args = func_get_args();
   $func = array_shift($args);
 
