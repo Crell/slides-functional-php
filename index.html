@@ -516,6 +516,22 @@ $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
               <li class="fragment">Reuse an object safely</li>
             </ul>
           </section>
+          <section>
+            <h2>Problems with mutation</h2>
+            <pre><code class="php">function foo(Something $a, Formatter $formatter) {
+  $bar = get_bar($a, 'bar');
+  $formatted = $formatter->format($a);
+  $a = make_changes($a, $bar);
+  Output::send($formatted);
+}
+$a = new Something();
+$a->bar = 'value1';
+
+foo($a);
+print $a->bar . PHP_EOL;
+</code></pre>
+            <pre class="fragment">lulz</pre>
+          </section>
         </section>
         <section>
           <section>
@@ -671,8 +687,8 @@ $values = array_map($adder, $array);</code></pre>
           <section>
             <h2>Practical Partials</h2>
             <pre data-credit="http://allthingsphp.blogspot.com/2012/02/currying-vs-partial-application.html"><code class="php">function partial($func, $arg1) {
-  $args = func_get_args();
-  $func = array_shift($args);
+  $func_args = func_get_args();
+  $args = array_slice($func_args, 1);
 
   return function() use($func, $args) {
       $full_args = array_merge($args, func_get_args());
