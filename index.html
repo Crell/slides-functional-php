@@ -163,7 +163,8 @@
                 </ul>
               </li>
             </ul>
-            <pre class="fragment"><code>Var MyList [5, 7, 2, 9, 2]
+            <pre class="fragment"><code data-trim>
+Var MyList [5, 7, 2, 9, 2]
 Var Biggest
 Procedure FindBiggest
   For MyList As Item
@@ -175,7 +176,8 @@ Procedure FindBiggest
 End Procedure
 
 Call FindBiggest
-Print Biggest</code></pre>
+Print Biggest
+            </code></pre>
           </section>
           <section>
             <p>Imperative Programming is following a recipe for a cake</p>
@@ -260,7 +262,7 @@ Print Biggest</code></pre>
           </section>
           <section>
             <h2>Pure functions</h2>
-            <pre><code class="php">
+            <pre><code class="php" data-trim>
 function theme_list(array $items, $type = 'ul') {
   $output = '';
   foreach ($items as $item) {
@@ -289,7 +291,7 @@ function theme_list(array $items, $type = 'ul') {
               <li class="fragment">Idempotent (usually)</li>
               <li class="fragment">No non-I/O side-effects</li>
             </ul>
-            <p style="margin-top: 1em;" class="fragment">Good service objects are pure functions</p>
+            <p style="margin-top: 1em;" class="bigtext fragment">Good service objects are pure functions</p>
             <aside class="notes">
               "Iceberg classes": Only one public method == function!
             </aside>
@@ -303,10 +305,12 @@ function theme_list(array $items, $type = 'ul') {
               <li class="fragment">Functions can be a parameter</li>
               <li class="fragment">Functions can be a return type</li>
             </ul>
-            <pre class="fragment"><code class="php">$function = function($value) {
+            <pre class="fragment"><code class="php" data-trim>
+$function = function($value) {
   return $value * 5;
 };
-$function($a);</code></pre>
+$function($a);
+            </code></pre>
           </section>
           <section class="slide">
             <h2>First-class functions</h2>
@@ -319,39 +323,46 @@ $function($a);</code></pre>
           </section>
           <section>
             <h2>Anonymous functions</h2>
-            <pre><code class="php">$find_pair = function ($card1, $card2) {
+            <pre><code class="php" data-trim>
+$find_pair = function ($card1, $card2) {
   return ($card1->value == $card2->value);
 };
 
-$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));
+            </code></pre>
 
             <div class="fragment">
               <div>==</div>
-              <pre><code class="php">class FindPair {
+              <pre><code class="php" data-trim>
+class FindPair {
   public function __invoke($card1, $card2) {
     return ($card1->value == $card2->value);
   }
 }
 
 $find_pair = new FindPair();
-$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));
+              </code></pre>
             </div>
           </section>
 
           <section>
             <h2>Closures</h2>
-            <pre><code class="php">$wild = new Card('5H');
+            <pre><code class="php" data-trim>
+$wild = new Card('5H');
 $find_pair = function ($card1, $card2) use ($wild) {
   return ($card1->value == $card2->value
     || $wild->value == $card1->value && $wild->suit == $card1->suit
     || $wild->value == $card2->value && $wild->suit == $card2->suit);
 };
 
-$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));
+            </code></pre>
 
             <div class="fragment">
               <div>==</div>
-              <pre><code class="php">$wild = new Card('5H');
+              <pre><code class="php" data-trim>
+$wild = new Card('5H');
 class FindPair {
   protected $wild;
   public function __construct($wild) {
@@ -364,12 +375,14 @@ class FindPair {
   }
 }
 $find_pair = new FindPair($wild);
-$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));
+              </code></pre>
             </div>
           </section>
           <section>
             <h2>Layering functions</h2>
-            <pre><code class="php">$wild = new Card('5H');
+            <pre><code class="php" data-trim>
+$wild = new Card('5H');
 
 $is_wild = function($card) use ($wild) {
   return $wild->value == $card->value && $wild->suit == $card->suit;
@@ -379,7 +392,8 @@ $find_pair = function ($card1, $card2) use ($is_wild) {
   return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
 };
 
-$is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
+$is_pair = $find_pair(new Card('2H'), new Card('8D'));
+            </code></pre>
             <aside class="notes">
               This looks an awful lot like Dependency Injection to me...
             </aside>
@@ -387,7 +401,8 @@ $is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
 
           <section>
             <h2>Delayed execution</h2>
-            <pre><code class="php">class Container {
+            <pre><code class="php" data-trim>
+class Container {
   protected $factories = array();
 
   public function __set($key, $func) {
@@ -400,14 +415,16 @@ $is_pair = $find_pair(new Card('2H'), new Card('8D'));</code></pre>
 }</code></pre>
 
             <div class="fragment">
-              <pre><code class="php">$container = new Container();
+              <pre><code class="php" data-trim>
+$container = new Container();
 $container->conn = function($c) {
   return new DatabaseConnection($c->info);
 };
 $container->info = function() { return ['user'=>'me', 'pass'=>'hi']; };
 
 $conn = $container->conn;
-$conn->query('...');</code></pre>
+$conn->query('...');
+              </code></pre>
             </div>
 
             <p class="fragment">Hey, look, a Dependency Injection Container!</p>
@@ -415,7 +432,8 @@ $conn->query('...');</code></pre>
           </section>
           <section>
             <h2>Importing</h2>
-              <pre class="fragment"><code class="php">abstract class Importer {
+            <pre class="fragment"><code class="php" data-trim>
+abstract class Importer {
   public function __construct(MapInterface $map) { $this->map = $map; }
   public function mapData($source) {
     $dest = $this->repository->create('someType');
@@ -425,7 +443,9 @@ $conn->query('...');</code></pre>
     return $dest;
   }
 }
-</code></pre><pre class="fragment"><code class="php">class MyMapper implements MapInterface {
+            </code></pre>
+            <pre class="fragment"><code class="php" data-trim>
+class MyMapper implements MapInterface {
   public function mapping() {
     $proc = $this->someUtilityService;
     $map['title'] = function($source) use ($proc) {
@@ -436,9 +456,11 @@ $conn->query('...');</code></pre>
     return $map;
   }
 }</code></pre>
-            <pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
+            <pre class="fragment"><code class="php" data-trim>
+$importer = new Importer(new MyMapper());
 $my_object = $importer->mapData($fancy_external_data_object);
-</code></pre>
+
+            </code></pre>
             <aside class="notes">
               <ul>
                 <li>An import engine that fits on one slide.</li>
@@ -477,7 +499,8 @@ $my_object = $importer->mapData($fancy_external_data_object);
               <li class="fragment">Could get very complicated, or...</li>
 
               <li class="fragment" style="list-style-type: none;">
-                <pre class="fragment"><code class="php">$result = array_map($callback, $array);
+                <pre><code class="php" data-trim>
+$result = array_map($callback, $array);
 
 $result = array_map(function($a) {
   // Your logic here.
@@ -502,11 +525,14 @@ $result = array_map(function($a, $b) {
           </section>
           <section>
             <h2>Declarative PHP</h2>
-<pre class="fragment"><code class="php">$importer = new Importer(new MyMapper());
+            <pre class="fragment"><code class="php" data-trim>
+$importer = new Importer(new MyMapper());
 foreach ($array_of_external_objects as $object) {
   $my_objects[] = $importer->mapData($object);
 }
-</code></pre><pre class="fragment"><code class="php">$apply = function($callback, Iterator $i) {
+            </code></pre>
+            <pre class="fragment"><code class="php" data-trim>
+function apply($callback, Iterator $i) {
   $ret = [];
   foreach ($i as $object) {
     $ret[] = $callback($object);
@@ -516,8 +542,8 @@ foreach ($array_of_external_objects as $object) {
 
 $importer = new Importer(new MyMapper());
 
-$my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
-</code></pre>
+$my_objects = apply([$importer, 'mapData'], $iter_of_objects);
+            </code></pre>
             <aside class="notes">
               What about pipelining the saving? (Left as an exercise for the reader)
             </aside>
@@ -551,7 +577,8 @@ $my_objects = $apply([$importer, 'mapData'], $iter_of_objects);
           </section>
           <section>
             <h2>Problems with mutation</h2>
-            <pre><code class="php">function foo(Something $a, Formatter $formatter) {
+            <pre><code class="php" data-trim>
+function foo(Something $a, Formatter $formatter) {
   $bar = get_bar($a, 'bar');
   $formatted = $formatter->format($a);
   $a = make_changes($a, $bar);
@@ -562,8 +589,15 @@ $a->bar = 'value1';
 
 foo($a);
 print $a->bar . PHP_EOL;
-</code></pre>
+            </code></pre>
             <pre class="fragment">lulz</pre>
+            <aside class="notes">
+              <ul>
+                <li>What gets printed?</li>
+                <li>Does make_changes() affect $formatted?</li>
+                <li>Where does lulz come from...?</li>
+              </ul>
+            </aside>
           </section>
         </section>
         <section>
@@ -577,7 +611,8 @@ print $a->bar . PHP_EOL;
           </section>
           <section>
             <h2>Memoization</h2>
-            <pre><code class="php">function expensive($key) {
+            <pre><code class="php" data-trim>
+function expensive($key) {
   static $keys = array();
 
   if (empty($keys[$key])) {
@@ -585,7 +620,8 @@ print $a->bar . PHP_EOL;
   }
 
   return $keys[$key];
-}</code></pre>
+}
+            </code></pre>
             <aside class="notes">
               <ul>
                 <li>Simple and easy</li>
@@ -596,7 +632,8 @@ print $a->bar . PHP_EOL;
           </section>
           <section>
             <h2>Memoization</h2>
-            <pre><code class="php">$factorial = function($a) use (&$factorial)  {
+            <pre><code class="php" data-trim>
+$factorial = function($a) use (&$factorial)  {
   print "Called function with $a" . PHP_EOL;
   if ($a == 1) {
     return 1;
@@ -605,7 +642,8 @@ print $a->bar . PHP_EOL;
 };
 
 print "Result: " . $factorial(3) . PHP_EOL;
-print "Result: " . $factorial(4) . PHP_EOL;</code></pre>
+print "Result: " . $factorial(4) . PHP_EOL;
+            </code></pre>
             <pre class="fragment">Called function with 3
 Called function with 2
 Called function with 1
@@ -618,7 +656,8 @@ Result: 24</pre>
           </section>
           <section>
             <h2>Memoization</h2>
-            <pre><code class="php">function memoize($function) {
+            <pre><code class="php" data-trim>
+function memoize($function) {
   return function() use ($function) {
     static $results = array();
     $args = func_get_args();
@@ -630,10 +669,11 @@ Result: 24</pre>
   };
 }
 
-$factorial = memoize($factorial);
+$mem_fac = memoize($factorial);
 
-print "Result: " . $factorial(3) . PHP_EOL;
-print "Result: " . $factorial(4) . PHP_EOL;</code></pre>
+print "Result: " . $mem_fac(3) . PHP_EOL;
+print "Result: " . $mem_fac(4) . PHP_EOL;
+            </code></pre>
             <pre class="fragment">Called function with 3
 Called function with 2
 Called function with 1
@@ -643,13 +683,16 @@ Result: 24</pre>
           </section>
           <section>
             <h2>What about objects?</h2>
-            <pre><code class="php">interface FancyInterface {
+            <pre><code class="php" data-trim>
+interface FancyInterface {
   public function compute($key);
 }
 class Fancy implements FancyInterface {
   public function compute($key) { }
-}</code></pre>
-            <pre class="fragment"><code class="php">class FancyCache implements FancyInterface {
+}
+            </code></pre>
+            <pre class="fragment"><code class="php" data-trim>
+class FancyCache implements FancyInterface {
   public function __construct(FancyInterface $wrapped) {
     $this->wrapped = $wrapped;
   }
@@ -659,27 +702,31 @@ class Fancy implements FancyInterface {
     }
     return $this->cache[$key];
   }
-}</code></pre>
-            <pre class="fragment"><code class="php">$fancy = new FancyCache(new Fancy());
+}
+            </code></pre>
+            <pre class="fragment"><code class="php" data-trim>
+$fancy = new FancyCache(new Fancy());
 $fancy->compute();
 $fancy->compute();
-</code></pre>
+            </code></pre>
           </section>
           <section>
             <h2>Memoize any callable</h2>
-            <pre><code class="php">interface FancyInterface {
+            <pre><code class="php" data-trim>
+interface FancyInterface {
   public function compute($key);
 }
 class Fancy implements FancyInterface {
   public function compute($key) { }
 }</code></pre>
-            <pre class="fragment"><code class="php">$f = new Fancy();
+            <pre class="fragment"><code class="php" data-trim>
+$f = new Fancy();
 $callable = [$f, 'compute'];
 $f_cached = memoize($callable);
 
 // And it really really works.
 $f_cached($key);
-</code></pre>
+            </code></pre>
           </section>
         </section>
         <section>
@@ -699,10 +746,13 @@ $f_cached($key);
           </section>
           <section>
             <h2>Partial-application</h2>
-            <pre><code class="php">$add = function ($a, $b) {
+            <pre><code class="php" data-trim>
+$add = function ($a, $b) {
   return $a + $b;
-};</code></pre>
-            <pre class="fragment"><code class="php">$add = function ($a) {
+};
+            </code></pre>
+            <pre class="fragment"><code class="php" data-trim>
+$add = function ($a) {
   return function($b) use ($a) {
     return $a + $b;
   };
@@ -713,13 +763,15 @@ $add5 = $add(5);
 
 $x = $add5($y);</code></pre>
 
-            <pre class="fragment"><code class="php">$adder = $add(get_config_value('increment_amount'));
+            <pre class="fragment"><code class="php" data-trim>
+$adder = $add(get_config_value('increment_amount'));
 $x = $adder($y);
 $values = array_map($adder, $array);</code></pre>
           </section>
           <section>
             <h2>Practical Partials</h2>
-            <pre data-credit="http://allthingsphp.blogspot.com/2012/02/currying-vs-partial-application.html"><code class="php">function partial($func, $arg1) {
+            <pre data-credit="http://allthingsphp.blogspot.com/2012/02/currying-vs-partial-application.html"><code class="php" data-trim>
+function partial($func, $arg1) {
   $func_args = func_get_args();
   $args = array_slice($func_args, 1);
 
@@ -729,24 +781,24 @@ $values = array_map($adder, $array);</code></pre>
   };
 }
 $date_formatter = partial('date', 'Y-m-d h:i:s');
-print $date_formatter(1372636800);
-</code></pre>
+print $date_formatter(1372914000);
+            </code></pre>
             <pre class="fragment">
-2013-07-01 00:00:00
+2013-07-04 12:00:00
 </pre>
-            <pre class="fragment"><code class="php">$dates = [1372636800, 1372896000, 1383004800,1384009200];
+            <pre class="fragment"><code class="php" data-trim>
+$dates = [1372914000, 1404450000, 341647200, 1414558800];
 
 print implode(PHP_EOL, array_map($date_formatter, $dates)) . PHP_EOL;</code></pre>
             <pre class="fragment">
-2013-07-01 00:00:00
-2013-07-04 00:00:00
-2013-10-29 00:00:00
-2013-11-09 15:00:00
+2013-07-04 12:00:00
+2014-07-04 12:00:00
+1980-10-29 12:00:00
+2014-10-29 12:00:00
 </pre>
             <aside class="notes">
               <ul>
-                <li>First timestamp is Canada Day this year</li>
-                <li>Second output: Canada Day, US Indy, My birthday, This talk!</li>
+                <li>Dates: July 4th last year, this year, my birthday, my birthday this year</li>
               </ul>
             </aside>
           </section>
