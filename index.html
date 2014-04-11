@@ -747,24 +747,24 @@ $f_cached($key);
           <section>
             <h2>Partial-application</h2>
             <pre><code class="php" data-trim>
-$add = function ($a, $b) {
+function add($a, $b) {
   return $a + $b;
 };
             </code></pre>
             <pre class="fragment"><code class="php" data-trim>
-$add = function ($a) {
+function partial_add($a) {
   return function($b) use ($a) {
     return $a + $b;
   };
 };
 
-$add1 = $add(1);
-$add5 = $add(5);
+$add1 = partial_add(1);
+$add5 = partial_add(5);
 
 $x = $add5($y);</code></pre>
 
             <pre class="fragment"><code class="php" data-trim>
-$adder = $add(get_config_value('increment_amount'));
+$adder = partial_add(get_config_value('increment_amount'));
 $x = $adder($y);
 $values = array_map($adder, $array);</code></pre>
           </section>
@@ -799,6 +799,8 @@ print implode(PHP_EOL, array_map($date_formatter, $dates)) . PHP_EOL;</code></pr
             <aside class="notes">
               <ul>
                 <li>Dates: July 4th last year, this year, my birthday, my birthday this year</li>
+                <li>zOMG it's dependency injection all over again!</li>
+                <li>Would this work for a method, too? Totally!</li>
               </ul>
             </aside>
           </section>
