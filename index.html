@@ -300,6 +300,57 @@ function theme_list(array $items, $type = 'ul') {
             </aside>
           </section>
         </section>
+<section>
+          <section>
+            <h2>Immutable variables</h2>
+            <ul>
+              <li class="fragment">Once set, may not be changed</li>
+              <li class="fragment">Allows for memory optimization</li>
+              <li class="fragment">Reduces SAD</li>
+              <li class="fragment">State is where bugs come from</li>
+              <li class="fragment">Forces small functions</li>
+            </ul>
+            <aside class="notes">
+              <ul>
+                <li>Be an enemy of the state</li>
+                <li>Stepping through a debugger looking to see where that var changed...</li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Value Objects</h2>
+            <ul>
+              <li class="fragment">Easier testing</li>
+              <li class="fragment">Less SAD</li>
+              <li class="fragment">Often easier to read</li>
+              <li class="fragment">Reuse an object safely</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Problems with mutation</h2>
+            <pre><code class="php" data-trim>
+function foo(Something $a, Formatter $formatter) {
+  $bar = get_bar($a, 'bar');
+  $formatted = $formatter->format($a);
+  $a = make_changes($a, $bar);
+  Output::send($formatted);
+}
+$a = new Something();
+$a->bar = 'value1';
+
+foo($a);
+print $a->bar . PHP_EOL;
+            </code></pre>
+            <pre class="fragment">lulz</pre>
+            <aside class="notes">
+              <ul>
+                <li>What gets printed?</li>
+                <li>Does make_changes() affect $formatted?</li>
+                <li>Where does lulz come from...?</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
         <section>
           <section class="slide">
             <h2>First-class functions</h2>
@@ -458,7 +509,8 @@ class MyMapper implements MapInterface {
     $map['extra'] = function($source) { return "Some hard coded value"; };
     return $map;
   }
-}</code></pre>
+}
+            </code></pre>
             <pre class="fragment"><code class="php" data-trim>
 $importer = new Importer(new MyMapper());
 $my_object = $importer->mapData($fancy_external_data_object);
@@ -474,9 +526,9 @@ $my_object = $importer->mapData($fancy_external_data_object);
           </section>
         </section>
         <section>
-          <section>
-            <h2>The Functional Way</h2>
-          </section>
+          <h2>Functional tools</h2>
+        </section>
+        <section>
           <section>
             <h2>Map/Reduce</h2>
             <ul>
@@ -551,57 +603,6 @@ $my_objects = apply([$importer, 'mapData'], $iter_of_objects);
             </code></pre>
             <aside class="notes">
               What about pipelining the saving? (Left as an exercise for the reader)
-            </aside>
-          </section>
-        </section>
-        <section>
-          <section>
-            <h2>Immutable variables</h2>
-            <ul>
-              <li class="fragment">Once set, may not be changed</li>
-              <li class="fragment">Allows for memory optimization</li>
-              <li class="fragment">Reduces SAD</li>
-              <li class="fragment">State is where bugs come from</li>
-              <li class="fragment">Forces small functions</li>
-            </ul>
-            <aside class="notes">
-              <ul>
-                <li>Be an enemy of the state</li>
-                <li>Stepping through a debugger looking to see where that var changed...</li>
-              </ul>
-            </aside>
-          </section>
-          <section>
-            <h2>Value Objects</h2>
-            <ul>
-              <li class="fragment">Easier testing</li>
-              <li class="fragment">Less SAD</li>
-              <li class="fragment">Often easier to read</li>
-              <li class="fragment">Reuse an object safely</li>
-            </ul>
-          </section>
-          <section>
-            <h2>Problems with mutation</h2>
-            <pre><code class="php" data-trim>
-function foo(Something $a, Formatter $formatter) {
-  $bar = get_bar($a, 'bar');
-  $formatted = $formatter->format($a);
-  $a = make_changes($a, $bar);
-  Output::send($formatted);
-}
-$a = new Something();
-$a->bar = 'value1';
-
-foo($a);
-print $a->bar . PHP_EOL;
-            </code></pre>
-            <pre class="fragment">lulz</pre>
-            <aside class="notes">
-              <ul>
-                <li>What gets printed?</li>
-                <li>Does make_changes() affect $formatted?</li>
-                <li>Where does lulz come from...?</li>
-              </ul>
             </aside>
           </section>
         </section>
@@ -798,6 +799,11 @@ print $date_formatter(1372914000);
               </ul>
             </aside>
           </section>
+        </section>
+        <section>
+          <section>
+            <h3>Bring it all together</h3>
+          </section>
           <section>
             <h3>Layering functions: Revisited</h3>
             <pre><code class="php" data-trim>
@@ -842,8 +848,6 @@ $is_pair = $pair_checker(new Card('2H'), new Card('8D'));
 $cached_checker = memoize($pair_checker);
 
 $is_pair = $cached_checker(new Card('2H'), new Card('8D'));
-
-
             </code></pre>
             <aside class="notes">
               <ul>
@@ -855,6 +859,17 @@ $is_pair = $cached_checker(new Card('2H'), new Card('8D'));
                 <li>3 of a kind, Flush, etc. checkers reuse is_wild(), partial(), and memoize()</li>
               </ul>
             </aside>
+          </section>
+          <section>
+            <h3>Build from atomic pieces</h3>
+            <pre><code class="php" data-trim>
+function is_three_kind($find_pair, array $cards) {
+  return $find_pair($cards[0], $cards[1]) && $find_pair($cards[1], $cards[2]);
+}
+
+$three_checker = memoize(partial('is_three_kind', $pair_checker));
+            </code></pre>
+            <p class="fragment" style="margin-top: 1em;">And keep on going...</p>
           </section>
         </section>
         <section>
