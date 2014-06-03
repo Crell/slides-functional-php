@@ -116,10 +116,6 @@
           </section>
           <section>
             <h2>Von Neumann Architecture</h2>
-            <img src="assets/Computer_system_bus.svg" alt="Computer system bus" data-credit="http://en.wikipedia.org/wiki/File:Computer_system_bus.svg" />
-          </section>
-          <section>
-            <h2>Von Neumann Architecture</h2>
             <ul>
               <li class="fragment">A program is just data: "Stored Program" concept</li>
               <li class="fragment">A program is a series of steps</li>
@@ -442,7 +438,7 @@ $is_wild = function($card) use ($wild) {
   return $wild->value == $card->value && $wild->suit == $card->suit;
 }
 
-$find_pair = function ($card1, $card2) use ($is_wild) {
+$find_pair = function ($c1, $2) use ($is_wild) {
   return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
 };
 
@@ -813,7 +809,7 @@ $is_wild = function($card) use ($wild) {
 return $wild->value == $card->value && $wild->suit == $card->suit;
 }
 
-$find_pair = function ($card1, $card2) use ($is_wild) {
+$find_pair = function ($c1, $c2) use ($is_wild) {
 return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
 };
 
@@ -834,7 +830,7 @@ function is_wild($wild, $card) {
   return $wild->value == $card->value && $wild->suit == $card->suit;
 }
 
-function find_pair($is_wild, $card1, $card2) {
+function find_pair($is_wild, $c1, $c2) {
   return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
 };
             </code></pre>
@@ -900,8 +896,6 @@ $three_checker = memoize(partial('is_three_kind', $pair_checker));
           <p>Making the Web a Better Place</p>
           <p>Keep tabs on our work at <a href="http://twitter.com/Palantir">@Palantir</a></p>
           <p>Want to hear about <a href="http://eepurl.com/ws6uj">what we're doing</a>?</p>
-
-          <p style="margin-top: 1em;"><a href="https://joind.in/10614">https://joind.in/10614</a></p>
         </section>
       </div>
     </div>
