@@ -66,9 +66,6 @@
             </div>
           </section>
           <section>
-            <blockquote>If you look at the history of computers backwards, it starts with kids flailing ends with smart men solving really hard problems.</blockquote>
-          </section>
-          <section>
             <h2>Two views of computing</h2>
             <div class="fragment" style="width: 46%; float: left; border: 1px; text-align: center;">
               <h3><a href="http://en.wikipedia.org/wiki/Alonzo_Church">Alonzo Church</a></h3>
@@ -367,7 +364,7 @@ $function($a);
             <ul>
               <li class="fragment">Strategy pattern</li>
               <li class="fragment">Lazy-evaluation</li>
-              <li class="fragment">Partial evaluation / Currying</li>
+              <li class="fragment">Partial evaluation </li>
             </ul>
             <p style="margin-top: 1em;" class="fragment">Or just a really cool shorthand for objects</p>
           </section>
@@ -438,7 +435,7 @@ $is_wild = function($card) use ($wild) {
   return $wild->value == $card->value && $wild->suit == $card->suit;
 }
 
-$find_pair = function ($c1, $2) use ($is_wild) {
+$find_pair = function ($c1, $c2) use ($is_wild) {
   return ($c1->value == $c2->value || $is_wild($c1) || $is_wild($c2));
 };
 
@@ -451,6 +448,29 @@ $is_pair = $find_pair(new Card('2H'), new Card('8D'));
           </section>
           <section>
             <h2>Delayed execution</h2>
+            <pre><code class="php" data-trim>
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class MyController {
+  public function helloCsv() {
+    $lots_of_data = get_lots_of_data();
+
+    $response = new StreamedResponse();
+    $response->headers->set('Content-Type', 'text/csv');
+
+    $response->setCallback(function() use ($lots_of_data) {
+      foreach ($lots_of_data as $record) {
+        print implode(', ', $record) . PHP_EOL;
+      }
+    });
+
+    return $response;
+  }
+}
+            </code></pre>
+          </section>
+          <section>
+            <h2>Unordered dependencies</h2>
             <pre><code class="php" data-trim>
 class Container {
   protected $factories = array();
@@ -547,10 +567,8 @@ $my_object = $importer->mapData($fancy_external_data_object);
           <section>
             <h2>Map/Reduce</h2>
             <ul>
-              <li class="fragment">Could get very complicated, or...</li>
-
-              <li class="fragment" style="list-style-type: none;">
-                <pre><code class="php" data-trim>
+              <p class="fragment">Could get very complicated, or...</p>
+              <pre class="fragment"><code class="php" data-trim>
 $result = array_map($callback, $array);
 
 $result = array_map(function($a) {
@@ -562,11 +580,8 @@ $result = array_map(function($a, $b) {
 }, $array1, $array2);
 
 $result = array_map([$obj, 'aMethod'], $array);
-                </code></pre>
-              </li>
-              <li class="fragment"><code>foreach()</code>, but separates application from loop</li>
-              <li class="fragment">Slightly slower, but not enough to care</li>
-            </ul>
+            </code></pre>
+            <p class="fragment"><code>foreach()</code>, but separates application from loop</p>
             <aside class="notes">
               <ul>
                 <li>First: any callable</li>
@@ -824,10 +839,8 @@ $is_pair = $find_pair(new Card('2H'), new Card('8D'));
           <section>
             <h3>Testable functions</h3>
             <pre><code class="php" data-trim>
-$wild = new Card('5H');
-
-function is_wild($wild, $card) {
-  return $wild->value == $card->value && $wild->suit == $card->suit;
+function is_equal($a, $b) {
+  return $a->value == $b->value && $a->suit == $b->suit;
 }
 
 function find_pair($is_wild, $c1, $c2) {
@@ -835,7 +848,7 @@ function find_pair($is_wild, $c1, $c2) {
 };
             </code></pre>
             <pre class="fragment"><code class="php" data-trim>
-$wild_checker = partial('is_wild', new Card('5H'));
+$wild_checker = partial('is_equal', new Card('5H'));
 $pair_checker = partial('find_pair', $wild_checker);
 
 $is_pair = $pair_checker(new Card('2H'), new Card('8D'));
@@ -847,7 +860,7 @@ $is_pair = $cached_checker(new Card('2H'), new Card('8D'));
             </code></pre>
             <aside class="notes">
               <ul>
-                <li>is_wild() and find_pair() are pure functions!</li>
+                <li>is_equal() and find_pair() are pure functions!</li>
                 <li>$cached_checker is now testable, and cacheable, and injected, and easy to understand.</li>
                 <li>Broken down to easily-understandable constituent parts.</li>
                 <li>"Naive" OOP version would be way uglier.</li>
