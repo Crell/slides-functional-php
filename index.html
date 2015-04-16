@@ -26,8 +26,12 @@
     <script src="lib/js/html5shiv.js"></script>
     <![endif]-->
 
-    <style>
+    <script src="palantir/classer.js"></script>
 
+    <style>
+      .struck {
+        text-decoration: line-through;
+      }
     </style>
 
   </head>
@@ -870,14 +874,28 @@ $is_pair = $cached_checker(new Card('2H'), new Card('8D'));
           </section>
           <section>
             <h3>Build from atomic pieces</h3>
-            <pre><code class="php" data-trim>
+            <pre id="three-kind-buggy"><code class="php" data-trim>
 function is_three_kind($find_pair, array $cards) {
   return $find_pair($cards[0], $cards[1]) && $find_pair($cards[1], $cards[2]);
 }
-
+              </code></pre>
+              <pre class="fragment"><code class="php" data-trim>
 $three_checker = memoize(partial('is_three_kind', $pair_checker));
             </code></pre>
+            <pre class="fragment" data-classer="three-kind-buggy" data-classer-class="struck"><code class="php" data-trim>
+function is_three_kind($find_pair, array $cards) {
+  return $find_pair($cards[0], $cards[1])
+         && $find_pair($cards[1], $cards[2])
+         && $find_pair($cards[0], $cards[2]);
+}
+            </code></pre>
             <p class="fragment" style="margin-top: 1em;">And keep on going...</p>
+            <aside class="notes">
+              <ul>
+                <li>First version has bug: 1 is wild, will always return true even if 0 and 2 not match.</li>
+                <li>Bug fix super-localized, trivial fix, no impact on caching or anything.</li>
+              </ul>
+            </aside>
           </section>
         </section>
         <section>
